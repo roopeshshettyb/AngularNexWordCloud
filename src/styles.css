@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+#popuphover  {
+
+    transition: height 0.3s;
+  }
+  #popup:hover {
+    background-color: rgba(0,0,0,0.1);
+    cursor:pointer;
+  }
+  
+  #wordHighlight {
+    position: absolute;
+    visibility: false;
+    border: 3px solid rgb(2, 101, 230);
+    box-shadow: 0 0 4px 0 #008;
+    padding: 2px;
+    cursor: pointer;
+    /*margin: -4px 0 0 -4px;*/
+    pointer-events: none; }
