@@ -7,6 +7,7 @@
         "captionColor": "red",
         "cloudWidth": 800,
         "cloudHeight": 500,
+        "weightFactor": 0.8,
         "thumbnail": {
             "display": false,
             "height": 110,
@@ -20,13 +21,10 @@
             "linkColor": "black",
             "fontSize": "22px",
             "widthOffset": 250,
-            "width": "250px",
-            "padding": {
-                "paddingTop": "8px",
-                "paddingLeft": "30px",
-                "paddingBottom": "8px",
-                "paddingRight": "30px"
-            }
+            "width": "250px"
+        },
+        "highlight": {
+            "display": true
         },
         "box": {
             "position": "absolute",

@@ -15,6 +15,17 @@ const nexwordcloud = () =>{
   const filename = queryParams.get("input") || "words";
   const file = require("../assets/" + filename + ".json")
   const styles = file.style
+  let popUpStyle = {
+    "position": "absolute",
+    "top": "50%",
+    "left": "50%",
+    "transform": "translate(-50%, -50%)",
+    "minWidth": "70vw",
+    "minHeight": "90vh",
+    "bgcolor": "background.paper",
+    "boxShadow": 24,
+    "p": 1
+  }
   var data = file.words.sort((a: { weight: number; }, b: { weight: number; }) => { return a.weight - b.weight });
 
   const [pop, setPop] = useState(false);
@@ -25,10 +36,14 @@ const nexwordcloud = () =>{
   const [open, setOpen] = useState(false);
   const [dropLinks,setDropLinks]=useState([])
 
-  const canvasHeight = styles.cloudHeight;
-  const canvasWidth = styles.cloudWidth;   //edit canvasWidth to make the cloud bigger/smaller
+  const canvasHeight = styles.cloudHeight || 900;
+  const canvasWidth = styles.cloudWidth || 500;   //edit canvasWidth to make the cloud bigger/smaller
   const count = data.length
-  var thumbnailDisplay = styles.thumbnail.display
+  var thumbnailDisplay = styles.thumbnail.display|| false
+  const displayPopup = styles.popup.display || true
+  const displayHighlight = styles.highlight.display || false
+  const displayWord = styles.popup.displayWord || false;
+  const displayCount = styles.popup.displayCount || false;
 
   var minWeight = Math.min(...data.slice(0, count).map((w: { weight: any; }) => w.weight));
   const max = Math.max(...data.map((w: { weight: any; }) => w.weight))
@@ -80,41 +95,43 @@ const nexwordcloud = () =>{
   function getSize(size: number, item: any, final_data: any[]) {
     let biggest = final_data[0][0].length;
     let max = maxWeight;
-    let factor = 1
+    let factor = styles.weightFactor || 0.8
     if (biggest <= 7) {
       if (size === max) {
-        return factor / 1.31 * (Math.pow(size, 0.95) * (3 * (canvasWidth - 300) / 2)) / 1024;
+        return factor / 1.31 * (Math.pow(size, 1) * (3 * (canvasWidth - 300) / 2)) / 1024;
       }
-      return factor / 1.2 * (Math.pow(size, 0.75) * (3 * (canvasWidth - 300) / 2)) / 1024;
+      return factor / 1.2 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 300) / 2)) / 1024;
     } else if (biggest > 7 && biggest <= 10) {
       if (size === max) {
-        return factor / 1.3 * (Math.pow(size, 0.85) * (3 * (canvasWidth - 200) / 2)) / 1024;
+        return factor / 1.3 * (Math.pow(size, 0.95) * (3 * (canvasWidth - 200) / 2)) / 1024;
       }
-      return factor / 1.2 * (Math.pow(size, 0.75) * (3 * (canvasWidth - 300) / 2)) / 1024;
+      return factor / 1.2 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 300) / 2)) / 1024;
     } else if (biggest > 10 && biggest <= 13) {
       if (size === max) {
-        return factor / 1.3 * (Math.pow(size, 0.8) * (3 * (canvasWidth - 200) / 2)) / 1024;
+        return factor / 1.3 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 200) / 2)) / 1024;
       }
-      return factor / 1.2 * (Math.pow(size, 0.75) * (3 * (canvasWidth - 300) / 2)) / 1024;
+      return factor / 1.2 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 300) / 2)) / 1024;
     } else if (biggest > 13) {
       if (size === max) {
-        return factor / 1.3 * (Math.pow(size, 0.75) * (3 * (canvasWidth - 200) / 2)) / 1024;
+        return factor / 1.3 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 200) / 2)) / 1024;
       }
-      return factor / 1.2 * (Math.pow(size, 0.70) * (1.5 * (canvasWidth - 300) / 2)) / 1024;
+      return factor / 1.2 * (Math.pow(size, 0.90) * (3 * (canvasWidth - 300) / 2)) / 1024;
     }
     return 1
   }
 
   const popup=(item: any,dimension: any,event: any,)=> {
     try {
-      var el = document.getElementById('wordHighlight');
       if (item !== undefined) {
-        if(el){
-        el.removeAttribute('hidden');
-        el.style.left = dimension.x + event.srcElement.offsetLeft + 'px';
-        el.style.top = dimension.y + event.srcElement.offsetTop + 'px';
-        el.style.width = dimension.w + 'px';
-        el.style.height = dimension.h + 'px';
+        if( displayHighlight){
+        var el = document.getElementById('wordHighlight');
+          if(el){
+          el.removeAttribute('hidden');
+          el.style.left = dimension.x + event.srcElement.offsetLeft + 'px';
+          el.style.top = dimension.y + event.srcElement.offsetTop + 'px';
+          el.style.width = dimension.w + 'px';
+          el.style.height = dimension.h + 'px';
+          }
         }
         setDropLinks(item[2])
         setWord(item);
@@ -122,9 +139,10 @@ const nexwordcloud = () =>{
         setProps(event);
         setPop(true);
       } else {
-        if(el){
+        if(displayHighlight){
+            var el = document.getElementById('wordHighlight');
             if(componentRef.current) componentRef.current["scrollTo(0, 0)"];
-            el.setAttribute('hidden', "true");
+            if(el) el.setAttribute('hidden', "true");
         }
         setPop(false);
         setWord([])
@@ -145,8 +163,10 @@ const nexwordcloud = () =>{
   }
 
   function generateCloud() {
-    var el = document.getElementById('wordHighlight');
-    if(el) el.setAttribute('hidden', "true");
+    if( displayHighlight){
+       var el = document.getElementById('wordHighlight');
+       if(el) el.setAttribute('hidden', "true");
+    }
     setOpen(true)
     let final_data: any[][] = [];
     data.forEach((w: { word: any; weight: any; click: any;  }) => {
@@ -223,16 +243,16 @@ const nexwordcloud = () =>{
           onClick={() =>  { if (pop === true && word.length !== 0) popoff() }}
         >
           <canvas style={{ cursor: "pointer" }} ref={canvasRef} width={canvasWidth} height={canvasHeight} />
-          <div id='wordHighlight' ></div>
-          <div ref={componentRef} hidden={!pop } style={{ 
+        {displayHighlight &&  <div id='wordHighlight' ></div>}
+          {displayPopup && <div ref={componentRef} hidden={!pop } style={{ 
             position: "absolute", 
             top: props.y, 
             left: props.x, 
-            minWidth: styles.popup.width,
+            minWidth: styles.popup.width || "250px",
               zIndex: 1,
-              fontSize: styles.popup.fontSize,
+              fontSize: styles.popup.fontSize || "22px",
               fontFamily: styles.fontFamily || "Raleway",
-              backgroundColor: styles.popup.backgroundColor || "black",
+              backgroundColor: styles.popup.backgroundColor || "white",
               color: styles.popup.fontColor || "black",
               transform: 'translate(7%,10%)',
               boxShadow: "2px 2px 20px 2px #888888",
@@ -241,26 +261,26 @@ const nexwordcloud = () =>{
               paddingTop: "15px",
               paddingBottom: "15px",
               }}>
-            {(styles.popup.displayWord || false) &&
+            {(displayWord || false) &&
               <div style={{ paddingTop: '8px', paddingLeft: '28px', paddingBottom: '8px', paddingRight: '30px', display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
                 {element.charAt(0).toUpperCase() + element.slice(1, element.length)}
               </div>
             }
-            {(styles.popup.displayCount || false) && <div style={styles.popup.padding}>
+            {(displayCount || false) && <div style={{ "padding": "8px 30px 8px 30px" }}>
               Count: {word[4]}
             </div>}
-            {(styles.popup.displayWord || false) && <div style={{ padding: '5px', borderBottom: '1px solid grey' }}></div>}
-            {(styles.popup.displayWord || false) && <div style={{ padding: '5px' }}></div>}
+            {(displayWord || false) && <div style={{ padding: '5px', borderBottom: '1px solid grey' }}></div>}
+            {(displayWord || false) && <div style={{ padding: '5px' }}></div>}
             {word && dropLinks.map((link: { label: string; link:string }, idx: React.Key | null | undefined) => (
               <div id='popup' key={idx} >
-                  <div id='popup' key={idx} style={styles.popup.padding} > 
-                  <a style={{color:'black', fontFamily:styles.fontFamily, textDecoration:'none'}} href={link.link} target="_blank">
+                  <div id='popup' key={idx}  style={{ "padding": "8px 30px 8px 30px" }} > 
+                  <a style={{color:'black', fontFamily:styles.fontFamily||"Raleway", textDecoration:'none'}} href={link.link} target="_blank">
                     {link.label.charAt(0).toUpperCase() + link.label.slice(1, link.label.length)}
                     </a>
                   </div>
               </div>
             ))}
-            </div>
+            </div>}
         </div>
         {styles.caption && (
           <div>
@@ -272,10 +292,10 @@ const nexwordcloud = () =>{
       </div>
     }
     <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,50%' }}>
-      {thumbnailDisplay && <canvas style={{ cursor: "pointer"}} onClick={() => { open ? setOpen(false) : generateCloud() }} ref={thumbnailCanvasRef} width={styles.thumbnail.width} height={styles.thumbnail.height} />}
+      {thumbnailDisplay && <canvas style={{ cursor: "pointer"}} onClick={() => { open ? setOpen(false) : generateCloud() }} ref={thumbnailCanvasRef} width={styles.thumbnail.width||200} height={styles.thumbnail.height||110} />}
     </div>
     {thumbnailDisplay && 
-    <div  hidden={!open} style={styles.box}>
+    <div  hidden={!open} style={styles.box||popUpStyle}>
       <div hidden={!open}style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       onMouseLeave={ () =>  popoff()}
       onClick={() =>  { if (pop === true && word.length !== 0) popoff() }}
@@ -283,14 +303,14 @@ const nexwordcloud = () =>{
         <div onClick={()=>{setOpen(false);}}style={{ cursor:'pointer',position: 'absolute', right: 8, top: 8, color: "grey", fontSize:'30px',fontFamily:'Raleway', paddingRight:"10px", paddingTop:'10px' }}>
             X</div>
         <canvas style={{ cursor: "pointer" }} ref={canvasRef} width={canvasWidth} height={canvasHeight} />
-        <div id='wordHighlight'></div>
-          <div ref={componentRef} hidden={!pop } style={{ 
+       { displayHighlight && <div id='wordHighlight'></div>}
+         { displayPopup && <div ref={componentRef} hidden={!pop } style={{ 
             position: "absolute", 
             top: props.offsetY, 
-            left:props.offsetX+styles.popup.widthOffset, 
-            minWidth: styles.popup.width,
+            left:props.offsetX+(styles.popup.widthOffset|| 250), 
+            minWidth: styles.popup.width || "250px",
               zIndex: 1,
-              fontSize: styles.popup.fontSize,
+              fontSize: styles.popup.fontSize || "22px",
               fontFamily: styles.fontFamily || "Raleway",
               backgroundColor: styles.popup.backgroundColor || "black",
               color: styles.popup.fontColor || "black",
@@ -302,26 +322,26 @@ const nexwordcloud = () =>{
               paddingBottom: "15px",
               
               }}>
-            {(styles.popup.displayWord || false) &&
+            {(displayWord || false) &&
               <div style={{ paddingTop: '8px', paddingLeft: '28px', paddingBottom: '8px', paddingRight: '30px', display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
                 {element.charAt(0).toUpperCase() + element.slice(1, element.length)}
               </div>
             }
-            {(styles.popup.displayCount || false) && <div style={styles.popup.padding}>
+            {(displayCount || false) && <div  style={{ "padding": "8px 30px 8px 30px" }}>
               Count: {word[4]}
             </div>}
-            {(styles.popup.displayWord || false) && <div style={{ padding: '5px', borderBottom: '1px solid grey' }}></div>}
-            {(styles.popup.displayWord || false) && <div style={{ padding: '5px' }}></div>}
+            {(displayWord || false) && <div style={{ padding: '5px', borderBottom: '1px solid grey' }}></div>}
+            {(displayWord || false) && <div style={{ padding: '5px' }}></div>}
             {word && dropLinks.map((link: { label: string; link:string }, idx: React.Key | null | undefined) => (
               <div id='popup' key={idx} >
-                  <div id='popup' key={idx} style={styles.popup.padding} > 
-                  <a style={{color:'black', fontFamily:styles.fontFamily, textDecoration:'none'}} href={link.link} target="_blank">
+                  <div id='popup' key={idx}  style={{ "padding": "8px 30px 8px 30px" }} > 
+                  <a style={{color:'black', fontFamily:styles.fontFamily||"Raleway", textDecoration:'none'}} href={link.link} target="_blank">
                     {link.label.charAt(0).toUpperCase() + link.label.slice(1, link.label.length)}
                     </a>
                   </div>
               </div>
             ))}
-            </div>
+            </div>}
         </div>
         {styles.caption && (
         <div>

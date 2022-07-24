@@ -6,6 +6,7 @@
         "captionSize": "10",
         "cloudWidth": "900",
         "cloudHeight": "500",
+        "weightFactor": 1,
         "thumbnail": {
             "display": false,
             "height": 110,
@@ -18,13 +19,11 @@
             "fontColor": "black",
             "linkColor": "black",
             "fontSize": "22px",
-            "width": "250px",
-            "padding": {
-                "paddingTop": "8px",
-                "paddingLeft": "30px",
-                "paddingBottom": "8px",
-                "paddingRight": "30px"
-            }
+            "widthOffset": 250,
+            "width": "250px"
+        },
+        "highlight": {
+            "display": false
         },
         "box": {
             "position": "absolute",
