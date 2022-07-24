@@ -1,27 +1,29 @@
-# AngularNexWordCloud
+# NexWordCloud
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.6.
+This is a spin-off project from [NexWordCloud](https://github.com/roopeshshettyb/NexWordCloud) for Angular.
+A Word Cloud with Client Side Rendering and Dynamic Number of Words
 
-## Development server
+Word cloud for Angular with Hover functionality.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The AngularNexWordCloud uses [wordcloud2.js](https://github.com/timdream/wordcloud2.js) by Tim Dream as a base component.
 
-## Code scaffolding
+**View the [demo](https://nex-word-cloud.vercel.app/)**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Installation
 
-## Build
+    - Clone the Repo
+    - npm install
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# Options
 
-## Running unit tests
+- A query parameter 'input' can be passed in the url which contains the file name of the json file which is located in ./public folder.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- A query parameter 'thumbnail' can be passed in the url which can define if the thumbnail should be displayed or not.
 
-## Running end-to-end tests
+- Cloud width and height can be edited in the json to suit your use case.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- A weight factor can also be edited in the json to increase/reduce the size of the words.
 
-## Further help
+- Clicked word is highlighted by a simple rectangular box around the word.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- /upload page is added where you can upload a CSV using the template defined in "./public/Template.csv" to generate a JSON with default styling.
