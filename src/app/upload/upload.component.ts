@@ -1,19 +1,15 @@
 import { AfterViewInit, Component, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import * as React from 'react';
-
-// import * as ReactDOM from 'react-dom';
-
-import nexwordcloud from './nexwordcloud';
-
 import { createRoot } from 'react-dom/client';
+import upload from './upload'
 
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-upload',
+  templateUrl: './upload.component.html',
+  styleUrls: ['./upload.component.css']
 })
-export class AppComponent implements OnChanges, AfterViewInit, OnDestroy {
+export class UploadComponent implements OnChanges, AfterViewInit, OnDestroy {
   title = 'angularnexwordcloud';
 
   public rootId = 'rootId'
@@ -33,7 +29,7 @@ export class AppComponent implements OnChanges, AfterViewInit, OnDestroy {
   private render() {
     const container = document.getElementById(this.rootId)
     const root = createRoot(container!);
-    root.render(React.createElement(nexwordcloud));
+    root.render(React.createElement(upload));
     // ReactDOM.render(React.createElement(nexwordcloud), document.getElementById(this.rootId));
   }
 }
