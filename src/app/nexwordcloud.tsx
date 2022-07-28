@@ -248,7 +248,8 @@ const nexwordcloud = () =>{
             position: "absolute", 
             top: props.y, 
             left: props.x, 
-            minWidth: styles.popup.width || "250px",
+            maxHeight: styles.popup.maxHeight || "400px",
+            minWidth: styles.popup.width || "260px",
               zIndex: 1,
               fontSize: styles.popup.fontSize || "22px",
               fontFamily: styles.fontFamily || "Raleway",
@@ -260,6 +261,8 @@ const nexwordcloud = () =>{
               transition: "height 0.3s",
               paddingTop: "15px",
               paddingBottom: "15px",
+              overflow: "hidden",
+              overflowY: "scroll",
               }}>
             {(displayWord || false) &&
               <div style={{ paddingTop: '8px', paddingLeft: '28px', paddingBottom: '8px', paddingRight: '30px', display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
@@ -307,8 +310,9 @@ const nexwordcloud = () =>{
          { displayPopup && <div ref={componentRef} hidden={!pop } style={{ 
             position: "absolute", 
             top: props.offsetY, 
-            left:props.offsetX+(styles.popup.widthOffset|| 250), 
-            minWidth: styles.popup.width || "250px",
+            left:props.offsetX+  (0.9 * (styles.popup.widthOffset|| 250)), 
+            maxHeight: styles.popup.maxHeight || "400px",
+            minWidth: styles.popup.width || "260px",
               zIndex: 1,
               fontSize: styles.popup.fontSize || "22px",
               fontFamily: styles.fontFamily || "Raleway",
@@ -320,6 +324,8 @@ const nexwordcloud = () =>{
               transition: "height 0.3s",
               paddingTop: "15px",
               paddingBottom: "15px",
+              overflow: "hidden",
+              overflowY: "scroll",
               
               }}>
             {(displayWord || false) &&

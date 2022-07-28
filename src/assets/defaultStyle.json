@@ -20,6 +20,7 @@
             "linkColor": "black",
             "fontSize": "22px",
             "widthOffset": 250,
+            "maxHeight": "400px",
             "width": "250px"
         },
         "highlight": {

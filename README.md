@@ -1,4 +1,4 @@
-# NexWordCloud
+# AngularNexWordCloud
 
 This is a spin-off project from [NexWordCloud](https://github.com/roopeshshettyb/NexWordCloud) for Angular.
 A Word Cloud with Client Side Rendering and Dynamic Number of Words
