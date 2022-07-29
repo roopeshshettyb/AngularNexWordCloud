@@ -39,7 +39,7 @@ const nexwordcloud = () =>{
   const canvasWidth = styles.cloudWidth || 500;   //edit canvasWidth to make the cloud bigger/smaller
   const count = data.length
   var thumbnailDisplay = styles.thumbnail.display|| false
-  const displayPopup = styles.popup.display || true
+  var displayPopup = styles.popup.display || false
   const displayHighlight = styles.highlight.display || false
   const displayWord = styles.popup.displayWord || false;
   const displayCount = styles.popup.displayCount || false;
@@ -53,6 +53,7 @@ const nexwordcloud = () =>{
   data.sort((a: { weight: number; }, b: { weight: number; }) => { return b.weight - a.weight });
 
   if (queryParams.get('thumbnail') !== null) { thumbnailDisplay = (queryParams.get('thumbnail') === 'true') }
+  if (queryParams.get('popup') !== null) { displayPopup = (queryParams.get('popup') === 'true') }
 
   function normalise(val: number, max: number, min: number) {
     return ((val - min) * 400 / (max - min)) + (max * 5 / min);
@@ -135,12 +136,12 @@ const nexwordcloud = () =>{
         setDropLinks(item[2])
         setWord(item);
         setElement(item[0])
+        if(window.top!==null) window.top.postMessage({ item, x: event.x, y: event.y }, '*');
         setProps(event);
         setPop(true);
       } else {
         if(displayHighlight){
             var el = document.getElementById('wordHighlight');
-            if(componentRef.current) componentRef.current["scrollTo(0, 0)"];
             if(el) el.setAttribute('hidden', "true");
         }
         setPop(false);
