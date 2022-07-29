@@ -32,7 +32,6 @@ const nexwordcloud = () =>{
   const [word, setWord] = useState([]);
   const [props, setProps] = useState({x:0,y:0,offsetX:0,offsetY:0});
   const [element, setElement] = useState("hello")
-  const [maxWeight, setMaxWeight] = useState(0);
   const [open, setOpen] = useState(false);
   const [dropLinks,setDropLinks]=useState([])
 
@@ -56,7 +55,7 @@ const nexwordcloud = () =>{
   if (queryParams.get('thumbnail') !== null) { thumbnailDisplay = (queryParams.get('thumbnail') === 'true') }
 
   function normalise(val: number, max: number, min: number) {
-    return ((val - min) * 500 / (max - min)) + max / min;
+    return ((val - min) * 400 / (max - min)) + (max * 5 / min);
   }
 
   // Overwrite Math.random to use seed to ensure same word cloud is printed on every render
@@ -81,7 +80,7 @@ const nexwordcloud = () =>{
     return res;
   }
 
-  function getColor(word: any, weight: number) {
+  function getColor(word: any, weight: number, maxWeight: number) {
     if (weight >= minWeight && weight < medianOne) {
       return "rgba(0,0,0,0.6)";
     } else if (weight < medianTwo && weight >= medianOne) {
@@ -92,7 +91,7 @@ const nexwordcloud = () =>{
     return 'rgba(0,0,0,0.6)'
   }
 
-  function getSize(size: number, item: any, final_data: any[]) {
+  function getSize(size: number, item: any, final_data: any[], maxWeight:number) {
     let biggest = final_data[0][0].length;
     let max = maxWeight;
     let factor = styles.weightFactor || 0.8
@@ -172,7 +171,7 @@ const nexwordcloud = () =>{
     data.forEach((w: { word: any; weight: any; click: any;  }) => {
       final_data.push([w.word, w.weight, w.click, 0, w.weight]);
     });
-    setMaxWeight(Math.max(...data.map((w: { weight: any; }) => w.weight)));
+    const maxWeight = Math.max(...data.map((w: { weight: any; }) => w.weight))
     var listColorCounter = 0;
     Wordcloud(canvasRef.current, {
       list: final_data,
@@ -183,11 +182,11 @@ const nexwordcloud = () =>{
       fontFamily: styles.fontFamily || "Raleway",
       backgroundColor: styles.backgroundColor || "White",
       color: (word: any, weight: any) => {
-        if (final_data[listColorCounter][3] !== 0) { return final_data[listColorCounter++][3]; } else { return getColor(word, weight) }
+        if (final_data[listColorCounter][3] !== 0) { return final_data[listColorCounter++][3]; } else { return getColor(word, weight,maxWeight) }
       },
       rotationSteps: 2,
       rotateRatio: 0.4,
-      weightFactor: (size: any, item: any) => getSize(size, item, final_data),
+      weightFactor: (size: any, item: any) => getSize(size, item, final_data,maxWeight),
       shrinkToFit: true,
       minSize: 3,
       drawOutOfBound: false,
@@ -205,7 +204,7 @@ const nexwordcloud = () =>{
     data.forEach((w: { word: any; weight: any; click: any; }) => {
       final_data.push([w.word, w.weight, w.click, 0, w.weight]);
     });
-    setMaxWeight(Math.max(...data.map((w: { weight: any; }) => w.weight)));
+    const maxWeight = Math.max(...data.map((w: { weight: any; }) => w.weight))
     var listColorCounter = 0;
     Wordcloud(thumbnailCanvasRef.current, {
       list: final_data,
@@ -216,12 +215,12 @@ const nexwordcloud = () =>{
       fontFamily: styles.fontFamily || "Raleway",
       backgroundColor: styles.backgroundColor || "White",
       color: (word: any, weight: any) => {
-        if (final_data[listColorCounter][3] !== 0) { return final_data[listColorCounter++][3]; } else { return getColor(word, weight) }
+        if (final_data[listColorCounter][3] !== 0) { return final_data[listColorCounter++][3]; } else { return getColor(word, weight,maxWeight) }
       },
       rotationSteps: 2,
       rotateRatio: 0.4,
       fontWeight: function () { return "bold"; },
-      weightFactor: (size: any, item: any) => getSize(size, item, final_data),
+      weightFactor: (size: any, item: any) => getSize(size, item, final_data,maxWeight),
       shrinkToFit: true,
       minSize: 3,
       drawOutOfBound: false,
@@ -231,7 +230,7 @@ const nexwordcloud = () =>{
   useEffect(() => {
     if (thumbnailDisplay === false) { generateCloud() }
     else { generateThumbnail() }
-  }, [maxWeight]);
+  }, []);
 
   return (
 

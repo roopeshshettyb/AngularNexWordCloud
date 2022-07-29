@@ -10,7 +10,7 @@
         "captionColor": "red",
         "cloudWidth": 800,
         "cloudHeight": 500,
-        "weightFactor": 0.8,
+        "weightFactor": 1,
         "thumbnail": {
             "display": false,
             "height": 110,
