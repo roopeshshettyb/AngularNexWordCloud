@@ -56,7 +56,7 @@ const nexwordcloud = () =>{
   if (queryParams.get('thumbnail') !== null) { thumbnailDisplay = (queryParams.get('thumbnail') === 'true') }
 
   function normalise(val: number, max: number, min: number) {
-    return (val - min) * 500 / (max - min);
+    return ((val - min) * 500 / (max - min)) + max / min;
   }
 
   // Overwrite Math.random to use seed to ensure same word cloud is printed on every render
@@ -89,7 +89,7 @@ const nexwordcloud = () =>{
     } else if (weight <= maxWeight && weight >= medianTwo) {
       return "rgba(0,0,0,1.0)";
     }
-    return 'red'
+    return 'rgba(0,0,0,0.6)'
   }
 
   function getSize(size: number, item: any, final_data: any[]) {
@@ -248,7 +248,7 @@ const nexwordcloud = () =>{
             position: "absolute", 
             top: props.y, 
             left: props.x, 
-            maxHeight: styles.popup.maxHeight || "400px",
+            minHeight: styles.popup.minHeight || "100px",
             minWidth: styles.popup.width || "260px",
               zIndex: 1,
               fontSize: styles.popup.fontSize || "22px",
@@ -261,8 +261,6 @@ const nexwordcloud = () =>{
               transition: "height 0.3s",
               paddingTop: "15px",
               paddingBottom: "15px",
-              overflow: "hidden",
-              overflowY: "scroll",
               }}>
             {(displayWord || false) &&
               <div style={{ paddingTop: '8px', paddingLeft: '28px', paddingBottom: '8px', paddingRight: '30px', display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
@@ -285,13 +283,15 @@ const nexwordcloud = () =>{
             ))}
             </div>}
         </div>
-        {styles.caption && (
-          <div>
-            <h2 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.captionColor || "blue", display: 'flex', justifyContent: 'center' }}>
-              {styles.caption}
-            </h2>
-          </div>
-        )}
+        {(styles.cloudTitle || styles.cloudDescription) && (
+            <div>  <h1 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.titleColor || "blue", display: 'flex', justifyContent: 'center' }}>
+            {styles.cloudTitle}
+          </h1>
+          <h3 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.descriptionColor || "black", display: 'flex', justifyContent: 'center' }}>
+            {styles.cloudDescription}
+          </h3>
+        </div>
+      )}
       </div>
     }
     <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,50%' }}>
@@ -311,7 +311,7 @@ const nexwordcloud = () =>{
             position: "absolute", 
             top: props.offsetY, 
             left:props.offsetX+  (0.9 * (styles.popup.widthOffset|| 250)), 
-            maxHeight: styles.popup.maxHeight || "400px",
+            minHeight: styles.popup.minHeight || "100px",
             minWidth: styles.popup.width || "260px",
               zIndex: 1,
               fontSize: styles.popup.fontSize || "22px",
@@ -324,8 +324,6 @@ const nexwordcloud = () =>{
               transition: "height 0.3s",
               paddingTop: "15px",
               paddingBottom: "15px",
-              overflow: "hidden",
-              overflowY: "scroll",
               
               }}>
             {(displayWord || false) &&
@@ -349,11 +347,13 @@ const nexwordcloud = () =>{
             ))}
             </div>}
         </div>
-        {styles.caption && (
-        <div>
-          <h2 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.captionColor || "blue", display: 'flex', justifyContent: 'center' }}>
-            {styles.caption}
-          </h2>
+        {(styles.cloudTitle || styles.cloudDescription) && (
+            <div>  <h1 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.titleColor || "blue", display: 'flex', justifyContent: 'center' }}>
+            {styles.cloudTitle}
+          </h1>
+          <h3 style={{ fontFamily: styles.fontFamily || "Raleway", color: styles.descriptionColor || "black", display: 'flex', justifyContent: 'center' }}>
+            {styles.cloudDescription}
+          </h3>
         </div>
       )}
       </div>

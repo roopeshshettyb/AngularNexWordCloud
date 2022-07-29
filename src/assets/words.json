@@ -2,7 +2,10 @@
     "style": {
         "fontFamily": "Raleway",
         "backgroundColor": "White",
-        "caption": "This is a Programming Language cloud",
+        "cloudTitle": "Programming language cloud",
+        "cloudDescription": "Programming languages ranked randomly",
+        "titleColor": "brown",
+        "descriptionColor": "black",
         "captionSize": "10",
         "captionColor": "red",
         "cloudWidth": 800,
@@ -21,11 +24,11 @@
             "linkColor": "black",
             "fontSize": "22px",
             "widthOffset": 250,
-            "maxHeight": "400px",
+            "minHeight": "100px",
             "width": "250px"
         },
         "highlight": {
-            "display": true
+            "display": false
         },
         "box": {
             "position": "absolute",
